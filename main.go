@@ -86,6 +86,13 @@ func main() {
 
 	flag.Parse()
 
+	if *fileUrl == "" || *destination == "" || *checksum == "" {
+		fmt.Println("Debbie downer. A program to download things in a cloud environment.")
+		fmt.Println("All arguments are mandatory.")
+		flag.PrintDefaults()
+		return
+	}
+
 	err := doDownload(*fileUrl, *destination, *checksum)
 	if err != nil {
 		fmt.Errorf("ERROR: %s", err)
