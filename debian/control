@@ -1,0 +1,11 @@
+Source: debbie
+Priority: optional
+Section: net
+Maintainer: tribaal@ubuntu.com
+Build-Depends: debhelper (>= 9),
+               lsb-release
+
+Package: debbie
+Architecture: amd64
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: Debbie is a simple download program.
