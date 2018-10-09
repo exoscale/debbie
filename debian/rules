@@ -1,16 +1,16 @@
 #!/usr/bin/make -f
 
 DISTRIBUTION := $(shell lsb_release -sc)
-VERSION := $(shell make --no-print-directory version)
+VERSION := $(shell cat VERSION)
 DEBVERSION = $(VERSION)-$(shell date +%Y%m%d-%H%M%S)-0~$(DISTRIBUTION)0
 
+export DH_OPTIONS
+
+export DH_GOPKG := github.com/exoscale/debbie
+
 %:
-	dh $@
+	dh $@ --buildsystem=golang --with=golang
+
 
 override_dh_gencontrol:
 	dh_gencontrol -- -$(DEBVERSION)
-
-override_dh_auto_build:
-	# nothing
-override_dh_auto_test:
-	# Run tests during integration tests

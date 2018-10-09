@@ -1,1 +1,5 @@
 debbie
+obj-*
+debian/files
+debian/*substvars
+debian/*debhelper.log

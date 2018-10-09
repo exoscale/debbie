@@ -1,11 +1,17 @@
 Source: debbie
 Priority: optional
 Section: net
-Maintainer: tribaal@ubuntu.com
+Standards-Version: 4.1.3
+Rules-Requires-Root: no
+Maintainer: Christopher Glass (Ubuntu) <tribaal@ubuntu.com>
 Build-Depends: debhelper (>= 9),
+               dh-golang,
                lsb-release
 
 Package: debbie
 Architecture: amd64
 Depends: ${shlibs:Depends}, ${misc:Depends}
-Description: Debbie is a simple download program.
+Description: A simple program to download and checksum files at the same time.
+  A simple program to download and check a file's integrity in one fell swoop.
+  Instead of requiring several steps (and shells) to download a file and check
+  its integrity, DEbiie (for debbie downer) does both at the same time.
