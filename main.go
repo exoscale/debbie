@@ -20,8 +20,7 @@ func md5sum(filePath string) (result string, err error) {
 	hash := md5.New()
 	_, err = io.Copy(hash, file)
 	if err != nil {
-		fmt.Errorf("Error in checksum: %s", err)
-		return
+		return "", fmt.Errorf("Error in checksum: %s", err)
 	}
 
 	result = hex.EncodeToString(hash.Sum(nil))
@@ -32,27 +31,22 @@ func doDownload(url string, destination string, try int, retries int) (err error
 	// Create an output file for the local image.
 	out, err := os.Create(destination)
 	if err != nil {
-		fmt.Errorf("Error creating %s. Try %d of %d", destination, try, retries)
-		return
+		return fmt.Errorf("Error creating %s. Try %d of %d", destination, try, retries)
 	}
 	defer out.Close()
 
 	// Open the URL and get its contents.
 	resp, err := http.Get(url)
 	if err != nil {
-		fmt.Errorf("Error downloading %s. Try %d of %d", url, try, retries)
-		return
+		return fmt.Errorf("Error downloading %s. Try %d of %d", url, try, retries)
 	}
 	defer resp.Body.Close()
 
 	// Get the file on disk.
 	_, err = io.Copy(out, resp.Body)
 	if err != nil {
-		fmt.Errorf("Error copying file. Try %d of %d", try, retries)
-		return
+		return fmt.Errorf("Error copying file. Try %d of %d", try, retries)
 	}
-
-	fmt.Println("Done with the downloading.")
 
 	return
 
@@ -69,15 +63,15 @@ func downloadWithRetry(url string, destination string, checksum string, retries 
 
 		// Compute the md5sum of the file.
 		md5sum, err := md5sum(destination)
-
-		if md5sum != checksum {
-			fmt.Errorf("Wrong checksum for file %s. Got %s instead of %s. Try %d of %d", destination, md5sum, checksum, try, retries)
-			continue
+		if err != nil {
+			return err
 		}
 
-		// If we get this far that means we succeeded in validation and the file is good.
+		if md5sum != checksum {
+			return fmt.Errorf("Wrong checksum for file %s. Got %s instead of %s. Try %d of %d", destination, md5sum, checksum, try, retries)
+		}
+
 		// No need for further tries
-		fmt.Println(md5sum, "matched! File is good.")
 		break
 	}
 
@@ -102,7 +96,7 @@ func main() {
 
 	err := downloadWithRetry(*fileUrl, *destination, *checksum, *retries)
 	if err != nil {
-		fmt.Errorf("ERROR: %s", err)
+		fmt.Fprintln(os.Stderr, err)
 	}
 	return
 
