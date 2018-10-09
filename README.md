@@ -1,5 +1,5 @@
-Debbie downer
-=============
+Debbie down(load)er
+===================
 
 **debbie** is a small utility that will download a given large file, store it in
 the filesystem, and compute its md5sum checksum, retrying if anything fails.
